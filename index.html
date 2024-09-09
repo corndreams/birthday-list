@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>生日表</title>
+  <style>
+	  *{
+		  margin: 0;
+		  padding: 0;
+	  }
+    body {
+      background: url(img/天蓝色.jpg);
+      background-size: 100% 100%;
+      /* background: linear-gradient(45deg, #fbda61, #ff5acd); */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .app {
+      width: 100%;
+      height: 100vh;
+      overflow-y: scroll;
+      /* background-color: #fff0f0; */
+      border-radius: 20px;
+      box-shadow: 0px 15px 40px #ffdce3;
+      border-radius: 15px;
+      /* background: linear-gradient(45deg, #faffd1, #ffe7fb); */
+      background: url(img/11.jpg);
+      background-size: 100% 100%;
+    }
+
+    h2 {
+		margin-top: 30px;
+      text-align: center;
+    }
+
+    table {
+      width: 348px;
+      margin: auto;
+      margin-top: 8px;
+    }
+
+    td {
+      width: 50%;
+      font-size: 20px;
+      text-indent: 6px;
+      border: 2px solid rgb(87, 77, 219);
+    }
+
+    .dateText {
+      display: block;
+      width: 180px;
+      position: relative;
+      left: 110px;
+      font-size: 18px;
+    }
+
+    .dateNext {
+      width: 260px;
+      position: relative;
+      left: 20px;
+      font-size: 18px;
+    }
+
+	.day{
+		display: inline-block;
+		position: relative;
+		left: 50%;
+		transform: translateX(-50%);
+	}
+    .add {
+      width: 100%;
+      height: 100%;
+      background-color: rgba(221, 221, 221, 0.152);
+      position: fixed;
+      display: none;
+	  z-index: 9999;
+    }
+
+    .addbox {
+      width: 300px;
+      height: 250px;
+      border-radius: 8px;
+      background-color: #f8f7f4;
+      position: absolute;
+      left: 50%;
+      top: 20%;
+      transform: translateX(-50%);
+    }
+
+    .btn-x {
+      width: 40px;
+      height: 40px;
+      font-size: 24px;
+      float: right;
+    }
+
+    .inp-t {
+      width: 250px;
+      position: relative;
+      top: 40px;
+      left: 50%;
+      transform: translateX(-90px);
+    }
+
+    input {
+      width: 180px;
+      margin-top: 10px;
+      height: 22px;
+    }
+
+    .btn {
+      width: 80px;
+      height: 40px;
+      margin-left: 50px;
+      margin-top: 20px;
+      background-color: #98ff86;
+    }
+
+    .del {
+      background-color: #ff7c7c;
+      color: #ffffff;
+      width: 100px;
+      height: 30px;
+      margin-left: 40px;
+      margin-top: 5px;
+      display: none;
+    }
+
+    .btn-add {
+      position: relative;
+      left: 230px;
+      width: 60px;
+      height: 25px;
+      display: block;
+      background-color: #c6efff;
+      border: 1px solid beige;
+	  margin-top: 4px;
+      margin-right: 0px;
+    }
+
+    .btn-add:hover {
+      background-color: #a5dcf3;
+    }
+
+    .btn-q {
+      width: 50px;
+      background-color: #fffeff;
+      border: 0px;
+    }
+
+    .btn-q:hover {
+      width: 50px;
+      background-color: #ffe6ff;
+      border: 0px;
+    }
+
+    span {
+      font-size: 20px;
+      width: 18px;
+      color: #ff2d2d;
+    }
+
+    .acte {
+      border: 1px solid red;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="add">
+    <div class="addbox">
+      <button class="btn-x">X</button>
+      <div class="inp-t">
+        <input type="text" placeholder="姓名" class="username"><br>
+        <input type="text" placeholder="生日" class="password"><br>
+        <input type="text" placeholder="分类" class="label"><br>
+        <button class="btn">确认</button><br>
+        <button class="del">删除</button>
+      </div>
+    </div>
+  </div>
+  <div class="app">
+    <h2>Birthday List&nbsp;&nbsp;&nbsp;
+      <select class="sel">
+      </select>
+    </h2>
+	<div class="day">
+      <div class="dateNext"></div>
+      <div class="dateText">2024/01/01 00:00:00</div>
+      <button class="btn-add">添加</button>
+	</div>
+    <table class="context"></table>
+  </div>
+  <script src="js/jquery-2.1.1.min.js" type="text/javascript"></script>
+  <!-- <script src="js/jquery-1.8.4.min.js" type="text/javascript"></script> -->
+  <script>
+    function pad(content, count, padStr) {
+      count = count || 2
+      padStr = padStr || '0'
+      content = String(content)
+      return content.padStart(count, padStr)
+    }
+    // 日期
+    const dateText = document.querySelector('.dateText')
+    let date = new Date()
+    let year = date.getFullYear()
+    let month = date.getMonth() + 1
+    let day = pad(date.getDate())
+    let hour = pad(date.getHours())
+    let minute = pad(date.getMinutes())
+    let second = pad(date.getSeconds())
+    dateText.innerHTML = `${year}/${month}/${day} &nbsp${hour}:${minute}:${second}`
+    setInterval(() => {
+      let date = new Date()
+      let year = date.getFullYear()
+      let month = date.getMonth() + 1
+      let day = pad(date.getDate())
+      let hour = pad(date.getHours())
+      let minute = pad(date.getMinutes())
+      let second = pad(date.getSeconds())
+      dateText.innerHTML = `${year}/${month}/${day} &nbsp${hour}:${minute}:${second}`
+    }, 1000);
+    let today = Number(`${month}${day}`)
+    console.log(today);
+
+
+    const btnAdd = document.querySelector('.btn-add')
+    const btnx = document.querySelector('.btn-x')
+    const btn = document.querySelector('.btn')
+    const add = document.querySelector('.add')
+    const del = document.querySelector('.del')
+    const inp = document.querySelectorAll('input')
+    //显示添加
+    btnAdd.addEventListener('click', () => {
+      inp[0].value = ''
+      inp[1].value = ''
+      inp[2].value = ''
+      gai = false
+      add.style.display = 'block'
+      del.style.display = 'none'
+    })
+    btnx.addEventListener('click', () => {
+      add.style.display = 'none'
+    })
+
+    let credentials = [
+      //工作室
+      { username: '111', password: '0114', label: '1', tip: '0' },
+    ];
+    //获取本地
+    if (localStorage.getItem("credentials")) {
+      credentials = JSON.parse(localStorage.getItem("credentials"));
+    }
+    //本地
+    function local() {
+      localStorage.setItem('credentials', JSON.stringify(credentials))
+      credentials = JSON.parse(localStorage.getItem("credentials"));
+    }
+
+    //分类
+    let lab = [] //类别
+    let labx = ["全部"]
+    function lablist() {
+      for (i = 0; i < credentials.length; i++) {
+        lab.push(credentials[i].label)
+      }
+      labl = Array.from(new Set(lab)) //去除重复项
+	  console.log(labl);
+	  labx = ["全部"]
+	  labx = labx.concat(labl)
+	  console.log(labx);
+    }
+    lablist()
+	//选项展示
+    function inlab() {
+      let htmlStrLab = labx.map((item, index) => {
+        return `<option>${item}</option>`
+      }).join('')
+      document.querySelector('.sel').innerHTML = htmlStrLab
+    }
+    inlab()
+	
+	//生日提醒
+	function timer() {
+	let people = 0
+	for (i = 0; i < credentials.length; i++) {
+	  let pass = Number(credentials[i].password) //当前遍历的生日
+	  if (today <= pass && pass <= today + 7) { //7天以内
+	    people++
+	  }
+	  document.querySelector('.dateNext').innerHTML = `最近7天将有<span>${people}</span>位朋友过生日`
+	}
+	}
+	timer()
+
+    let selected = labx[0] //当前选项
+    let ix = null
+    let gai = false
+    const context = document.querySelector('.context')
+    let click = 0
+    let newlist = []
+    let deltime = 0
+    let tip = null //tip是选中的标识
+    //渲染数据
+    function intext(a) {
+      let htmlStr = credentials.map((item, index) => {
+        if (item.label === a) {
+          return `
+      <tr>
+      <td>${item.username}</td>
+      <td>${item.password}</td>
+      <td><button class="btn-q" tip='${item.tip}'>修改</button></td>
+      </tr>
+      <br>`}
+      }).join('')
+	  if (a=='全部') {
+	  	htmlStr = credentials.map((item, index) => {
+	  	  if (1) {
+	  	    return `
+	  	<tr>
+	  	<td>${item.username}</td>
+	  	<td>${item.password}</td>
+	  	<td><button class="btn-q" tip='${item.tip}'>修改</button></td>
+	  	</tr>
+	  	<br>`}
+	  	}).join('')
+	  }
+      document.querySelector('.context').innerHTML = htmlStr
+      const btnq = document.querySelectorAll('.btn-q')
+	  // 修改按钮
+      for (let index = 0; index < btnq.length; index++) {
+        btnq[index].addEventListener('click', () => {
+          tip = btnq[index].getAttribute('tip') //当前选中的tip
+          var result = credentials.find(item => item.tip === tip);
+          inp[0].value = result.username
+          inp[1].value = result.password
+          inp[2].value = result.label
+          gai = true
+          deltime = 0
+          del.style.display = 'block'
+          add.style.display = 'block'
+        })
+      }
+    }
+    intext(labx[0])
+
+    // 选项
+    function renew(selected,tianjia) {
+      credentials.sort(function (a, b) {
+        if (a.password === b.password) {
+          return
+        } else {
+          return a.password - b.password
+        }
+      })
+	  console.log(selected);
+	  // nav是判断当前分类是否还有人
+	  if(tianjia===1){
+	  let nav=0
+	  // console.log(credentials);
+	  for (i=0;i<credentials.length;i++) {
+		  // console.log(credentials[i]);
+	  	if (credentials[i].label == selected){
+		  nav++
+	  	  console.log(000);
+	  	}
+	  }
+	  if (nav===0) {
+	    console.log('11212312');
+	    // 如果没有选项变为lab[0]，lab清空
+	    selected = labx[0]
+	    lab=[]
+	  }
+	  }
+	  // 完成重新渲染等操作
+	  console.log(selected);
+      lablist()
+	  console.log(labx);
+      inlab()
+	  let selx=0
+	  labx.map((item, index) => {
+	  	if (item == selected){
+	  	  nav=0
+	  	  selx=index
+	  	}
+	  })
+	  console.log(selx);
+	  $('.sel')[0].selectedIndex = selx;
+      console.log(labx);
+      local()
+	  timer()
+	  console.log(selected);
+      intext(selected)
+    }
+
+    // 正则 对生日做判断，其他不为空
+    const reg = /^[0-9]{4}$/
+    let inpreg = 0
+    inp[1].addEventListener('blur', function () {
+    // 这里将生日截取为两部分月份小于12日期小于31
+      var l1 = this.value.slice(0, 2)
+      var l2 = this.value.slice(2, 4)
+      if (reg.test(this.value) && l1 <= 12 && l2 <= 31) {
+        inp[1].classList.remove('acte')
+        inpreg = 1
+      } else {
+        inp[1].classList.add('acte') // 红色边框
+        inpreg = 0
+      }
+    })
+	// 姓名 不为空即可
+    inp[0].addEventListener('blur', function () {
+      if (this.value != '') {
+        inp[0].classList.remove('acte')
+      } else {
+        inp[0].classList.add('acte')
+      }
+    })
+	// 分类 不为空
+    inp[2].addEventListener('blur', function () {
+      if (this.value != '') {
+        inp[2].classList.remove('acte')
+      } else {
+        inp[2].classList.add('acte')
+      }
+    })
+
+    //修改或添加
+    btn.addEventListener('click', () => {
+      x0 = inp[0].value
+      x1 = inp[1].value
+      x2 = inp[2].value
+	  var l1 = inp[1].value.slice(0, 2)
+	  var l2 = inp[1].value.slice(2, 4)
+	  if (reg.test(inp[1].value) && l1 <= 12 && l2 <= 31) {
+	    inp[1].classList.remove('acte')
+	    inpreg = 1
+	  } else {
+	    inp[1].classList.add('acte') // 标红警告
+	    inpreg = 0
+	  }
+      if (x0 != '' && inpreg && x2 != '') {
+		  // 新对象
+        xxx = { username: x0, password: x1, label: x2, tip: tip }
+		// 修改否则添加
+        if (gai) {
+          for (let i = 0; i < credentials.length; i++) {
+            if (credentials[i].tip == tip) {
+              credentials[i] = xxx
+              add.style.display = 'none'
+              renew(selected,1)
+              return
+            }
+          }
+        } else {
+		  // tip为时间戳
+          var xtip = Date.now().toString()
+          xxx = { username: x0, password: x1, label: x2, tip: xtip }
+          credentials.push(xxx)
+          add.style.display = 'none'
+		  selected = x2
+		  renew(selected,0)
+        }
+      }
+    })
+    // 选项更改
+    $('.sel').on('change', function () {
+      selected = $(this).children('option:selected').val()
+      intext(selected)
+    });
+
+    //删除
+    del.addEventListener('click', () => {
+      deltime++
+      if (deltime === 2) {
+        credentials = credentials.filter(function (item) {
+          return item.tip !== tip
+        });
+        console.log(credentials);
+		add.style.display = 'none'
+        renew(selected,1)
+      } else {
+        alert('请确认删除并再次点击')
+      }
+    })
+
+  </script>
+</body>
+
+</html>
